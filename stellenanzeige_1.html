@@ -89,7 +89,6 @@ function ProgressBar({step}) {
 }
 
 async function sendToAirtable(f) {
-  // Feldnamen exakt wie in Airtable "Stellenausschreibungen"
   const fields = {
     "Stellentitel":                          f.jobTitle,
     "Vereins- oder Verbandsname":            f.orgName,
@@ -108,10 +107,7 @@ async function sendToAirtable(f) {
     "Status":                                "Offen",
     "Eingestellt am":                        new Date().toISOString().split("T")[0],
   };
-
-  // Leere Felder entfernen
   Object.keys(fields).forEach(k => { if(fields[k]===null || fields[k]==="") delete fields[k]; });
-
   const res = await fetch(
     `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${encodeURIComponent(AIRTABLE_CONFIG.tableName)}`,
     {
@@ -131,11 +127,11 @@ async function sendToAirtable(f) {
 }
 
 function ClubForm() {
-  const [step,setStep]         = useState(0);
+  const [step,setStep]           = useState(0);
   const [submitted,setSubmitted] = useState(false);
   const [submitting,setSubmitting] = useState(false);
   const [submitError,setSubmitError] = useState("");
-  const [errors,setErrors]     = useState({});
+  const [errors,setErrors]       = useState({});
   const [f,setF] = useState({
     orgName:"", orgType:"", country:"", league:"",
     contactName:"", contactEmail:"", contactPhone:"",
