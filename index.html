@@ -9,27 +9,114 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f5f4f0; min-height: 100vh; padding: 16px; }
+
+    /* IFI CI Farben */
     :root {
-      --color-background-primary: #ffffff;
-      --color-background-secondary: #f5f4f0;
-      --color-background-tertiary: #eeede8;
-      --color-background-info: #e6f1fb;
-      --color-background-success: #eaf3de;
-      --color-background-warning: #faeeda;
-      --color-background-danger: #fcebeb;
-      --color-text-primary: #1a1a18;
-      --color-text-secondary: #5f5e5a;
-      --color-text-tertiary: #888780;
-      --color-text-info: #185fa5;
-      --color-text-success: #3b6d11;
-      --color-text-warning: #854f0b;
-      --color-text-danger: #a32d2d;
-      --color-border-secondary: rgba(0,0,0,0.3);
-      --color-border-tertiary: rgba(0,0,0,0.15);
-      --color-border-info: #185fa5;
-      --color-border-warning: #854f0b;
-      --color-border-danger: #a32d2d;
+      --ifi-red:        #E2003B;
+      --ifi-red-light:  #f5c6d4;
+      --ifi-red-bg:     #fdf0f4;
+      --ifi-gray:       #4B575F;
+      --ifi-gray-dark:  #323b42;
+      --ifi-gray-light: #e8eaec;
+      --ifi-gray-mid:   #9aa3a9;
+
+      --color-background-primary:   #ffffff;
+      --color-background-secondary: #f4f5f6;
+      --color-background-tertiary:  #e8eaec;
+      --color-background-info:      #fdf0f4;
+      --color-background-success:   #eaf3de;
+      --color-background-warning:   #faeeda;
+      --color-background-danger:    #fcebeb;
+
+      --color-text-primary:   #1a1f22;
+      --color-text-secondary: #4B575F;
+      --color-text-tertiary:  #9aa3a9;
+      --color-text-info:      #E2003B;
+      --color-text-success:   #3b6d11;
+      --color-text-warning:   #854f0b;
+      --color-text-danger:    #a32d2d;
+
+      --color-border-secondary: rgba(75,87,95,0.35);
+      --color-border-tertiary:  rgba(75,87,95,0.18);
+      --color-border-info:      #E2003B;
+      --color-border-warning:   #854f0b;
+      --color-border-danger:    #a32d2d;
+    }
+
+    body {
+      font-family: 'Gill Sans', 'Century Gothic', 'Futura', 'Trebuchet MS', sans-serif;
+      background: #f4f5f6;
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    /* Progress bar active color override */
+    .prog-active { color: var(--ifi-red) !important; }
+    .prog-done   { color: #3b6d11 !important; }
+    .prog-fill-bar { background: var(--ifi-red) !important; }
+
+    /* Button overrides */
+    .btn-primary {
+      background: var(--ifi-red) !important;
+      color: #fff !important;
+    }
+    .btn-primary:hover { background: #c0002f !important; }
+
+    /* Chip active */
+    .chip-active {
+      border-color: var(--ifi-red) !important;
+      background: var(--ifi-red-bg) !important;
+      color: var(--ifi-red) !important;
+    }
+
+    /* Section header stripe */
+    .sec-stripe {
+      font-family: 'Gill Sans', 'Century Gothic', 'Futura', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ifi-gray);
+      margin-top: 22px;
+      margin-bottom: 5px;
+      padding-left: 8px;
+      border-left: 3px solid var(--ifi-red);
+    }
+    .sec-stripe:first-child { margin-top: 0; }
+
+    /* IFI header bar */
+    .ifi-header {
+      background: var(--ifi-gray);
+      border-radius: 10px 10px 0 0;
+      padding: 18px 24px 16px;
+      margin-bottom: 0;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .ifi-header-logo {
+      height: 38px;
+      width: auto;
+    }
+    .ifi-header-text { flex: 1; }
+    .ifi-header-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .ifi-header-sub {
+      font-size: 12px;
+      color: rgba(255,255,255,0.65);
+      margin-top: 2px;
+      letter-spacing: 0.02em;
+    }
+    .ifi-red-bar {
+      height: 4px;
+      background: var(--ifi-red);
+      margin-bottom: 20px;
+      border-radius: 0;
     }
   </style>
 </head>
@@ -39,22 +126,20 @@
 
 const { useState } = React;
 
-// Identisch mit IFI-Spezialisten "Meine aktuelle Hauptrolle"
 const ROLES = ["Trainer / Head Coach","Co-Trainer / Assistant Coach","Torwarttrainer / Goalkeeper Coach","Athletiktrainer / Fitness Coach","Sportdirektor / Sporting Director","Scout / Head of Scouting","Sportmediziner / Sports Physician","Physiotherapeut / Physiotherapist","Sportpsychologe / Sports Psychologist","Videoanalyst / Video Analyst","Datenanalyst / Data Analyst","Vereinsmanager / Club Manager","Akademieleiter / Academy Director","Geschäftsführer Sport / CEO Sport","Mediendirektor / Media Director","Andere / Other"];
-// Identisch mit IFI-Spezialisten "Liga-Level"
 const LEVELS = ["Profi – 1. Liga","Profi – 2. Liga","Profi – 3. Liga","Halbprofi","Jugend – National","Jugend – Regional","Amateur","Verband / Federation"];
-// Identisch mit IFI-Spezialisten "Liga aktuell"
 const LEAGUES = ["1. Bundesliga","2. Bundesliga","3. Liga","Premier League","Championship","La Liga","Serie A","Ligue 1","Eredivisie","Super Lig","MLS","Saudi Pro League","Schweizer SL","Österreichische Bundesliga","Jugend (national)","Jugend (regional)","Verband / Federation","Keine / None","Andere / Other"];
-const COUNTRIES = ["Deutschland","Österreich","Schweiz","England","Spanien","Italien","Frankreich","Portugal","Niederlande","Belgien","USA","Andere / Other"];
+const COUNTRIES = ["Deutschland","Österreich","Schweiz","England","Spanien","Italien","Frankreich","Portugal","Niederlande","Belgien","USA","Saudi-Arabien","VAE","Andere / Other"];
 const LANGUAGES = ["Deutsch / German","Englisch / English","Spanisch / Spanish","Französisch / French","Italienisch / Italian","Portugiesisch / Portuguese","Niederländisch / Dutch","Arabisch / Arabic","Andere / Other"];
 const AVAILABILITY = ["Sofort / Immediately","Flexibel / Flexible","Ab 1 Monat / From 1 month","Ab 3 Monaten / From 3 months","Ab 6 Monaten / From 6 months"];
 const SALARY = ["Unter 50k €","50k–80k €","80k–120k €","120k–200k €","Über 200k €","Keine Angabe / Prefer not to say"];
-const ORG_TYPES = ["Club / Club","Verband / Federation","Akademie / Academy","Agentur / Agency","Andere / Other"];
+const ORG_TYPES = ["Verein / Club","Verband / Federation","Akademie / Academy","Agentur / Agency","Andere / Other"];
+const CONTRACT_TYPES = ["Unbefristet / Permanent","Befristet / Fixed-term","Freiberuflich / Freelance","Honorarvertrag / Fee contract","Andere / Other"];
+const CONTRACT_DURATIONS = ["6 Monate / 6 months","1 Jahr / 1 year","2 Jahre / 2 years","3+ Jahre / 3+ years","Offen / Open-ended"];
+const START_DATES = ["Sofort / Immediately","Ab 1 Monat / From 1 month","Ab 3 Monaten / From 3 months","Ab 6 Monaten / From 6 months","Saisonal / Seasonal","Flexibel / Flexible"];
+const EXPERIENCE = ["Keine / None","1–3 Jahre / 1–3 years","3–5 Jahre / 3–5 years","5–10 Jahre / 5–10 years","10+ Jahre / 10+ years"];
+const UEFA = ["Pro","A","B","C","Keine Anforderung / No requirement"];
 const STEPS = ["Club-Daten","Stelle & Anforderungen","Konditionen","Abschluss"];
-
-const inp = {width:"100%",padding:"9px 12px",borderRadius:8,border:"1px solid var(--color-border-secondary)",background:"var(--color-background-primary)",color:"var(--color-text-primary)",fontSize:14,boxSizing:"border-box",marginTop:4};
-const lbl = {fontSize:13,color:"var(--color-text-secondary)",fontWeight:500,display:"block",marginTop:14};
-const errSty = {fontSize:12,color:"var(--color-text-danger)",marginTop:3};
 
 const AIRTABLE_CONFIG = {
   apiKey: "patyYt5kcS9w0ky7e.f2528a8c93887bb92591bbae842f9e433cc01637184b7dc1a6100bcdf14e83cf",
@@ -62,27 +147,72 @@ const AIRTABLE_CONFIG = {
   tableName: "Stellenausschreibungen",
 };
 
-function Sel({options,value,onChange,placeholder}) {
-  return <select value={value} onChange={e=>onChange(e.target.value)} style={{...inp,marginTop:4}}><option value="">{placeholder||"Bitte wählen / Please select"}</option>{options.map(o=><option key={o} value={o}>{o}</option>)}</select>;
-}
-function MultiCheck({options,value,onChange,max}) {
+const inp = {
+  width:"100%", padding:"9px 12px", borderRadius:6,
+  border:"1px solid var(--color-border-secondary)",
+  background:"var(--color-background-primary)",
+  color:"var(--color-text-primary)",
+  fontSize:14, boxSizing:"border-box", marginTop:4,
+  fontFamily:"inherit",
+};
+const lbl = {
+  fontSize:13, color:"var(--color-text-secondary)", fontWeight:600,
+  display:"block", marginTop:14, fontFamily:"inherit",
+};
+const errSty = { fontSize:12, color:"var(--color-text-danger)", marginTop:3 };
+
+function Sel({options, value, onChange, placeholder}) {
   return (
-    <div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:6}}>
-      {options.map(o=>{
-        const sel=value.includes(o);
-        return <div key={o} onClick={()=>{if(sel)onChange(value.filter(x=>x!==o));else if(!max||value.length<max)onChange([...value,o]);}} style={{padding:"5px 11px",borderRadius:20,border:`1px solid ${sel?"var(--color-border-info)":"var(--color-border-secondary)"}`,background:sel?"var(--color-background-info)":"var(--color-background-primary)",color:sel?"var(--color-text-info)":"var(--color-text-secondary)",fontSize:13,cursor:"pointer",userSelect:"none"}}>{o}</div>;
+    <select value={value} onChange={e=>onChange(e.target.value)}
+      style={{...inp, marginTop:4, cursor:"pointer"}}>
+      <option value="">{placeholder||"Bitte wählen / Please select"}</option>
+      {options.map(o=><option key={o} value={o}>{o}</option>)}
+    </select>
+  );
+}
+
+function MultiCheck({options, value, onChange, max}) {
+  return (
+    <div style={{display:"flex", flexWrap:"wrap", gap:6, marginTop:6}}>
+      {options.map(o => {
+        const sel = value.includes(o);
+        return (
+          <div key={o}
+            className={sel ? "chip-active" : ""}
+            onClick={()=>{
+              if(sel) onChange(value.filter(x=>x!==o));
+              else if(!max||value.length<max) onChange([...value,o]);
+            }}
+            style={{
+              padding:"5px 12px", borderRadius:20,
+              border:`1px solid ${sel?"var(--ifi-red)":"var(--color-border-secondary)"}`,
+              background: sel?"var(--ifi-red-bg)":"var(--color-background-primary)",
+              color: sel?"var(--ifi-red)":"var(--color-text-secondary)",
+              fontSize:13, cursor:"pointer", userSelect:"none", transition:"all .15s",
+            }}>{o}</div>
+        );
       })}
     </div>
   );
 }
+
 function ProgressBar({step}) {
   return (
     <div style={{marginBottom:24}}>
-      <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
-        {STEPS.map((s,i)=><div key={s} style={{fontSize:11,color:i===step?"var(--color-text-info)":i<step?"var(--color-text-success)":"var(--color-text-tertiary)",fontWeight:i===step?500:400,flex:1,textAlign:"center"}}>{i+1}. {s}</div>)}
+      <div style={{display:"flex", justifyContent:"space-between", marginBottom:7}}>
+        {STEPS.map((s,i) => (
+          <div key={s} style={{
+            fontSize:11, fontWeight: i===step ? 700 : 400, flex:1, textAlign:"center",
+            color: i===step ? "var(--ifi-red)" : i<step ? "#3b6d11" : "var(--color-text-tertiary)",
+            letterSpacing:"0.02em",
+          }}>{i+1}. {s}</div>
+        ))}
       </div>
-      <div style={{height:4,background:"var(--color-background-tertiary)",borderRadius:4}}>
-        <div style={{height:4,background:"var(--color-text-info)",borderRadius:4,width:`${((step+1)/4)*100}%`,transition:"width 0.3s"}}/>
+      <div style={{height:4, background:"var(--color-background-tertiary)", borderRadius:4}}>
+        <div style={{
+          height:4, background:"var(--ifi-red)", borderRadius:4,
+          width:`${((step+1)/4)*100}%`, transition:"width 0.3s"
+        }}/>
       </div>
     </div>
   );
@@ -90,24 +220,32 @@ function ProgressBar({step}) {
 
 async function sendToAirtable(f) {
   const fields = {
-    "Stellentitel":                          f.jobTitle,
-    "Vereins- oder Verbandsname":            f.orgName,
-    "Ansprechsperson":                       f.contactName  || null,
-    "E-Mail-Adresse Ansprechsperson":        f.contactEmail || null,
-    "Telefonnummer der Ansprechsperson":     f.contactPhone || null,
-    "Gesuchte Rolle":                        f.role,
-    "Ligazugehörigkeit":                     f.league       || null,
-    "Land":                                  f.country,
-    "Beschreibung":                          f.description,
-    "Sprachkenntnisse":                      f.languages.join(", "),
-    "Geforderte Kompetenzen":                f.competencies || null,
-    "Gehalt (IFI-intern)":                   f.salary       || null,
-    "Verfügbarkeit ab":                      f.availability,
-    "Deadline am":                           f.deadline     || null,
-    "Status":                                "Offen",
-    "Eingestellt am":                        new Date().toISOString().split("T")[0],
+    "Stellentitel":                      f.jobTitle,
+    "Vereins- oder Verbandsname":        f.orgName,
+    "Ansprechsperson":                   f.contactName  || null,
+    "E-Mail-Adresse Ansprechsperson":    f.contactEmail || null,
+    "Telefonnummer der Ansprechsperson": f.contactPhone || null,
+    "Gesuchte Rolle":                    f.role,
+    "Ligazugehörigkeit":                 f.league       || null,
+    "Liga-Level":                        f.leagueLevel  || null,
+    "Land":                              f.country,
+    "Beschreibung":                      f.description,
+    "Sprachkenntnisse":                  f.languages.join(", "),
+    "Mindesterfahrung":                  f.experienceMin || null,
+    "UEFA-Lizenz Anforderung":           f.uefaRequired  || null,
+    "Geforderte Kompetenzen":            f.competencies  || null,
+    "Weitere Anforderungen":             f.additionalReqs || null,
+    "Vertragsart":                       f.contractType  || null,
+    "Vertragsdauer":                     f.contractDuration || null,
+    "Verfügbarkeit ab":                  f.availability,
+    "Gehalt (IFI-intern)":               f.salary        || null,
+    "Bewerbungsdeadline":                f.deadline      || null,
+    "Gewünschter Starttermin":           f.startDate     || null,
+    "Zusätzliche Informationen":         f.additionalInfo || null,
+    "Status":                            "Offen",
+    "Eingestellt am":                    new Date().toISOString().split("T")[0],
   };
-  Object.keys(fields).forEach(k => { if(fields[k]===null || fields[k]==="") delete fields[k]; });
+  Object.keys(fields).forEach(k => { if(fields[k]===null||fields[k]==="") delete fields[k]; });
   const res = await fetch(
     `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${encodeURIComponent(AIRTABLE_CONFIG.tableName)}`,
     {
@@ -119,26 +257,24 @@ async function sendToAirtable(f) {
       body: JSON.stringify({ fields }),
     }
   );
-  if (!res.ok) {
-    const e = await res.json();
-    throw new Error(e?.error?.message || "Airtable error");
-  }
+  if(!res.ok) { const e = await res.json(); throw new Error(e?.error?.message || "Airtable error"); }
   return await res.json();
 }
 
 function ClubForm() {
-  const [step,setStep]           = useState(0);
-  const [submitted,setSubmitted] = useState(false);
+  const [step,setStep]             = useState(0);
+  const [submitted,setSubmitted]   = useState(false);
   const [submitting,setSubmitting] = useState(false);
   const [submitError,setSubmitError] = useState("");
-  const [errors,setErrors]       = useState({});
+  const [errors,setErrors]         = useState({});
   const [f,setF] = useState({
-    orgName:"", orgType:"", country:"", league:"",
+    orgName:"", orgType:"", country:"", league:"", leagueLevel:"",
     contactName:"", contactEmail:"", contactPhone:"",
-    jobTitle:"", role:"", leagueLevel:"", description:"",
-    languages:[], competencies:"",
-    availability:"", salary:"", deadline:"", additionalInfo:"",
-    privacyConsent:false, dataConsent:false
+    jobTitle:"", role:"", description:"",
+    languages:[], experienceMin:"", uefaRequired:"", competencies:"", additionalReqs:"",
+    contractType:"", contractDuration:"",
+    availability:"", salary:"", deadline:"", startDate:"", additionalInfo:"",
+    privacyConsent:false, dataConsent:false,
   });
   const set = (k,v) => setF(p=>({...p,[k]:v}));
 
@@ -148,20 +284,23 @@ function ClubForm() {
       if(!f.orgName)    e.orgName    = "Pflichtfeld";
       if(!f.country)    e.country    = "Pflichtfeld";
       if(!f.league)     e.league     = "Pflichtfeld";
+      if(!f.leagueLevel) e.leagueLevel = "Pflichtfeld";
       if(!f.contactName)  e.contactName  = "Pflichtfeld";
       if(!f.contactEmail || !f.contactEmail.includes("@")) e.contactEmail = "Gültige E-Mail erforderlich";
     }
     if(s===1) {
       if(!f.jobTitle)    e.jobTitle    = "Pflichtfeld";
       if(!f.role)        e.role        = "Pflichtfeld";
-      if(!f.leagueLevel) e.leagueLevel = "Pflichtfeld";
       if(!f.description) e.description = "Pflichtfeld";
       if(f.languages.length===0) e.languages = "Mindestens eine Sprache wählen";
+      if(!f.experienceMin) e.experienceMin = "Pflichtfeld";
+      if(!f.uefaRequired)  e.uefaRequired  = "Pflichtfeld";
     }
     if(s===2) {
-      if(!f.availability) e.availability = "Pflichtfeld";
-      if(!f.salary)       e.salary       = "Pflichtfeld";
-      if(!f.deadline)     e.deadline     = "Pflichtfeld";
+      if(!f.contractType)  e.contractType  = "Pflichtfeld";
+      if(!f.availability)  e.availability  = "Pflichtfeld";
+      if(!f.salary)        e.salary        = "Pflichtfeld";
+      if(!f.deadline)      e.deadline      = "Pflichtfeld";
     }
     if(s===3) {
       if(!f.privacyConsent) e.privacyConsent = "Zustimmung erforderlich";
@@ -176,72 +315,104 @@ function ClubForm() {
     setErrors({});
     if(step < 3) { setStep(step+1); return; }
     setSubmitting(true); setSubmitError("");
-    try {
-      await sendToAirtable(f);
-      setSubmitted(true);
-    } catch(err) {
-      setSubmitError(`Fehler beim Speichern: ${err.message}. Bitte API Key und Base ID prüfen.`);
-    } finally {
-      setSubmitting(false);
-    }
+    try { await sendToAirtable(f); setSubmitted(true); }
+    catch(err) { setSubmitError(`Fehler: ${err.message}`); }
+    finally { setSubmitting(false); }
   };
 
-  const card = {background:"var(--color-background-primary)",border:"0.5px solid var(--color-border-tertiary)",borderRadius:12,padding:"20px 24px",marginBottom:12};
-  const sec  = (t) => <div style={{fontSize:12,fontWeight:500,color:"var(--color-text-tertiary)",letterSpacing:"0.05em",textTransform:"uppercase",marginTop:20,marginBottom:4}}>{t}</div>;
-  const configMissing = AIRTABLE_CONFIG.apiKey === "YOUR_AIRTABLE_API_KEY";
+  const card  = {background:"var(--color-background-primary)", border:"0.5px solid var(--color-border-tertiary)", borderRadius:10, padding:"20px 24px", marginBottom:12};
+  const sec   = (t) => <div className="sec-stripe">{t}</div>;
+
+  // IFI Logo SVG (nachgebaut aus CI)
+  const IFILogo = () => (
+    <svg height="38" viewBox="0 0 220 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="60" height="60" fill="#4B575F"/>
+      <polygon points="10,15 28,30 10,45" fill="#E2003B"/>
+      <rect x="28" y="10" width="10" height="40" fill="white"/>
+      <rect x="42" y="10" width="10" height="40" fill="white"/>
+      <rect x="42" y="10" width="18" height="10" fill="white"/>
+      <text x="68" y="24" fontFamily="'Gill Sans','Century Gothic',Futura,sans-serif" fontSize="13" fontWeight="700" fill="white" letterSpacing="2">INTERNATIONALES</text>
+      <text x="68" y="42" fontFamily="'Gill Sans','Century Gothic',Futura,sans-serif" fontSize="15" fontWeight="700" fill="white" letterSpacing="1.5">FUßBALL</text>
+      <text x="68" y="57" fontFamily="'Gill Sans','Century Gothic',Futura,sans-serif" fontSize="15" fontWeight="700" fill="white" letterSpacing="1.5">INSTITUT</text>
+    </svg>
+  );
 
   if(submitted) return (
-    <div style={{maxWidth:580,margin:"0 auto",padding:"40px 16px",textAlign:"center"}}>
-      <div style={{width:56,height:56,borderRadius:"50%",background:"var(--color-background-success)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 16px",fontSize:24,color:"var(--color-text-success)",fontWeight:700}}>✓</div>
-      <div style={{fontSize:20,fontWeight:500,marginBottom:8}}>Stellenanzeige eingereicht / Job posted</div>
-      <div style={{fontSize:14,color:"var(--color-text-secondary)",lineHeight:1.7}}>
-        Vielen Dank, <b>{f.orgName}</b>! Ihre Stellenanzeige wurde erfolgreich in der IFI-Datenbank gespeichert. Das IFI-Team wird sich innerhalb von 48 Stunden bei Ihnen melden.<br/><br/>
-        Thank you, <b>{f.orgName}</b>! Your job posting has been successfully saved. The IFI team will contact you within 48 hours.
+    <div style={{maxWidth:600,margin:"0 auto"}}>
+      <div className="ifi-header">
+        <IFILogo/>
+      </div>
+      <div className="ifi-red-bar"/>
+      <div style={{background:"white",borderRadius:"0 0 10px 10px",padding:"40px 24px",textAlign:"center"}}>
+        <div style={{width:56,height:56,borderRadius:"50%",background:"var(--color-background-success)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 16px",fontSize:24,color:"var(--color-text-success)",fontWeight:700}}>✓</div>
+        <div style={{fontSize:20,fontWeight:700,marginBottom:8,color:"var(--ifi-gray)"}}>Stellenanzeige eingereicht / Job posted</div>
+        <div style={{fontSize:14,color:"var(--color-text-secondary)",lineHeight:1.7}}>
+          Vielen Dank, <b>{f.orgName}</b>! Ihre Stellenanzeige wurde erfolgreich in der IFI-Datenbank gespeichert. Das IFI-Team wird sich innerhalb von 48 Stunden bei Ihnen melden.<br/><br/>
+          Thank you, <b>{f.orgName}</b>! Your job posting has been saved. The IFI team will contact you within 48 hours.
+        </div>
       </div>
     </div>
   );
 
   return (
-    <div style={{maxWidth:580,margin:"0 auto",padding:"16px 16px 40px"}}>
-      {configMissing && (
-        <div style={{background:"var(--color-background-warning)",border:"1px solid var(--color-border-warning)",borderRadius:8,padding:"10px 14px",marginBottom:16,fontSize:13,color:"var(--color-text-warning)"}}>
-          ⚠ Airtable noch nicht verbunden — bitte API Key und Base ID im Code eintragen. Das Formular kann trotzdem getestet werden.
+    <div style={{maxWidth:600,margin:"0 auto",paddingBottom:40}}>
+      {/* IFI Header */}
+      <div className="ifi-header">
+        <IFILogo/>
+        <div className="ifi-header-text">
+          <div className="ifi-header-title">IFI-Heads – Stellenanzeige</div>
+          <div className="ifi-header-sub">Job Posting / Vacancy Submission</div>
         </div>
-      )}
-      <div style={{textAlign:"center",marginBottom:20}}>
-        <div style={{fontSize:11,fontWeight:500,color:"var(--color-text-tertiary)",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:4}}>Internationales Fußball Institut</div>
-        <div style={{fontSize:20,fontWeight:500,color:"var(--color-text-primary)"}}>IFI-Heads – Stellenanzeige</div>
-        <div style={{fontSize:13,color:"var(--color-text-secondary)",marginTop:4}}>Job Posting / Vacancy Submission</div>
       </div>
-      <ProgressBar step={step}/>
+      <div className="ifi-red-bar"/>
+
+      <div style={{padding:"0 0 8px"}}>
+        <ProgressBar step={step}/>
+      </div>
 
       {/* ── Schritt 1: Club-Daten ── */}
       {step===0 && <div style={card}>
         {sec("Organisation")}
-        <label style={lbl}>Name des Clubs / Verbands *</label>
-        <input style={inp} value={f.orgName} onChange={e=>set("orgName",e.target.value)} placeholder="FC Beispiel"/>
-        {errors.orgName && <div style={errSty}>{errors.orgName}</div>}
-
-        <label style={lbl}>Organisationstyp</label>
-        <Sel options={ORG_TYPES} value={f.orgType} onChange={v=>set("orgType",v)}/>
-
-        <label style={lbl}>Land *</label>
-        <Sel options={COUNTRIES} value={f.country} onChange={v=>set("country",v)}/>
-        {errors.country && <div style={errSty}>{errors.country}</div>}
-
-        <label style={lbl}>Liga *</label>
-        <Sel options={LEAGUES} value={f.league} onChange={v=>set("league",v)}/>
-        {errors.league && <div style={errSty}>{errors.league}</div>}
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+          <div>
+            <label style={lbl}>Name des Clubs / Verbands *</label>
+            <input style={inp} value={f.orgName} onChange={e=>set("orgName",e.target.value)} placeholder="FC Beispiel"/>
+            {errors.orgName && <div style={errSty}>{errors.orgName}</div>}
+          </div>
+          <div>
+            <label style={lbl}>Organisationstyp / Type</label>
+            <Sel options={ORG_TYPES} value={f.orgType} onChange={v=>set("orgType",v)}/>
+          </div>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+          <div>
+            <label style={lbl}>Land / Country *</label>
+            <Sel options={COUNTRIES} value={f.country} onChange={v=>set("country",v)}/>
+            {errors.country && <div style={errSty}>{errors.country}</div>}
+          </div>
+          <div>
+            <label style={lbl}>Liga / League *</label>
+            <Sel options={LEAGUES} value={f.league} onChange={v=>set("league",v)}/>
+            {errors.league && <div style={errSty}>{errors.league}</div>}
+          </div>
+        </div>
+        <label style={lbl}>Liga-Level / League level *</label>
+        <Sel options={LEVELS} value={f.leagueLevel} onChange={v=>set("leagueLevel",v)}/>
+        {errors.leagueLevel && <div style={errSty}>{errors.leagueLevel}</div>}
 
         {sec("Ansprechpartner / Contact Person")}
-        <label style={lbl}>Name *</label>
-        <input style={inp} value={f.contactName} onChange={e=>set("contactName",e.target.value)} placeholder="Thomas Meier"/>
-        {errors.contactName && <div style={errSty}>{errors.contactName}</div>}
-
-        <label style={lbl}>E-Mail *</label>
-        <input style={inp} type="email" value={f.contactEmail} onChange={e=>set("contactEmail",e.target.value)} placeholder="t.meier@fcbeispiel.de"/>
-        {errors.contactEmail && <div style={errSty}>{errors.contactEmail}</div>}
-
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+          <div>
+            <label style={lbl}>Name *</label>
+            <input style={inp} value={f.contactName} onChange={e=>set("contactName",e.target.value)} placeholder="Thomas Meier"/>
+            {errors.contactName && <div style={errSty}>{errors.contactName}</div>}
+          </div>
+          <div>
+            <label style={lbl}>E-Mail *</label>
+            <input style={inp} type="email" value={f.contactEmail} onChange={e=>set("contactEmail",e.target.value)} placeholder="t.meier@fcbeispiel.de"/>
+            {errors.contactEmail && <div style={errSty}>{errors.contactEmail}</div>}
+          </div>
+        </div>
         <label style={lbl}>Telefon / Phone</label>
         <input style={inp} value={f.contactPhone} onChange={e=>set("contactPhone",e.target.value)} placeholder="+49 89 1234567"/>
       </div>}
@@ -249,49 +420,72 @@ function ClubForm() {
       {/* ── Schritt 2: Stelle & Anforderungen ── */}
       {step===1 && <div style={card}>
         {sec("Stelle / Position")}
-        <label style={lbl}>Stellentitel *</label>
-        <input style={inp} value={f.jobTitle} onChange={e=>set("jobTitle",e.target.value)} placeholder="Cheftrainer U23"/>
+        <label style={lbl}>Stellentitel / Job title *</label>
+        <input style={inp} value={f.jobTitle} onChange={e=>set("jobTitle",e.target.value)} placeholder="Cheftrainer U23 / Head Coach U23"/>
         {errors.jobTitle && <div style={errSty}>{errors.jobTitle}</div>}
 
-        <label style={lbl}>Gesuchte Rolle *</label>
+        <label style={lbl}>Gesuchte Rolle / Role sought *</label>
         <Sel options={ROLES} value={f.role} onChange={v=>set("role",v)}/>
         {errors.role && <div style={errSty}>{errors.role}</div>}
 
-        <label style={lbl}>Liga-Level *</label>
-        <Sel options={LEVELS} value={f.leagueLevel} onChange={v=>set("leagueLevel",v)}/>
-        {errors.leagueLevel && <div style={errSty}>{errors.leagueLevel}</div>}
-
-        <label style={lbl}>Stellenbeschreibung *</label>
-        <textarea style={{...inp,minHeight:100,resize:"vertical"}} value={f.description} onChange={e=>set("description",e.target.value)} placeholder="Aufgaben, Ziele und Erwartungen an die Position…"/>
+        <label style={lbl}>Stellenbeschreibung / Job description *</label>
+        <textarea style={{...inp,minHeight:100,resize:"vertical"}} value={f.description} onChange={e=>set("description",e.target.value)} placeholder="Aufgaben, Ziele und Erwartungen an die Position… / Tasks, goals and expectations for the role…"/>
         {errors.description && <div style={errSty}>{errors.description}</div>}
 
         {sec("Anforderungen / Requirements")}
-        <label style={lbl}>Gewünschte Sprachkenntnisse *</label>
+        <label style={lbl}>Mindesterfahrung / Minimum experience *</label>
+        <Sel options={EXPERIENCE} value={f.experienceMin} onChange={v=>set("experienceMin",v)}/>
+        {errors.experienceMin && <div style={errSty}>{errors.experienceMin}</div>}
+
+        <label style={lbl}>UEFA-Lizenz Mindestanforderung / Min. UEFA licence *</label>
+        <Sel options={UEFA} value={f.uefaRequired} onChange={v=>set("uefaRequired",v)}/>
+        {errors.uefaRequired && <div style={errSty}>{errors.uefaRequired}</div>}
+
+        <label style={lbl}>Sprachanforderungen / Language requirements *</label>
         <MultiCheck options={LANGUAGES} value={f.languages} onChange={v=>set("languages",v)}/>
         {errors.languages && <div style={errSty}>{errors.languages}</div>}
 
         <label style={lbl}>Geforderte Kompetenzen / Required competencies</label>
-        <textarea style={{...inp,minHeight:80,resize:"vertical"}} value={f.competencies} onChange={e=>set("competencies",e.target.value)} placeholder="z.B. Führungskompetenz, Kommunikation, Krisenmanagement, Taktik, Spielerentwicklung, Kaderplanung…"/>
-        <div style={{fontSize:12,color:"var(--color-text-tertiary)",marginTop:4}}>Freitext — bitte kommagetrennt eingeben / Free text — please separate with commas</div>
+        <textarea style={{...inp,minHeight:80,resize:"vertical"}} value={f.competencies} onChange={e=>set("competencies",e.target.value)} placeholder="z.B. Führungskompetenz, Taktik, Spielerentwicklung… / e.g. leadership, tactics, player development…"/>
+        <div style={{fontSize:12,color:"var(--color-text-tertiary)",marginTop:4}}>Freitext, kommagetrennt / Free text, comma-separated</div>
+
+        <label style={lbl}>Weitere Anforderungen / Additional requirements</label>
+        <textarea style={{...inp,minHeight:80,resize:"vertical"}} value={f.additionalReqs} onChange={e=>set("additionalReqs",e.target.value)} placeholder="z.B. internationale Erfahrung, Jugendtrainerschein, Reisebereitschaft… / e.g. international experience, youth licence, willingness to travel…"/>
       </div>}
 
       {/* ── Schritt 3: Konditionen ── */}
       {step===2 && <div style={card}>
+        {sec("Vertrag / Contract")}
+        <label style={lbl}>Vertragsart / Contract type *</label>
+        <Sel options={CONTRACT_TYPES} value={f.contractType} onChange={v=>set("contractType",v)}/>
+        {errors.contractType && <div style={errSty}>{errors.contractType}</div>}
+
+        <label style={lbl}>Vertragsdauer / Contract duration</label>
+        <Sel options={CONTRACT_DURATIONS} value={f.contractDuration} onChange={v=>set("contractDuration",v)}/>
+
         {sec("Konditionen / Conditions")}
-        <label style={lbl}>Verfügbarkeit gewünscht ab *</label>
+        <label style={lbl}>Verfügbarkeit gewünscht ab / Availability required from *</label>
         <Sel options={AVAILABILITY} value={f.availability} onChange={v=>set("availability",v)}/>
         {errors.availability && <div style={errSty}>{errors.availability}</div>}
 
-        <label style={lbl}>Gehaltsrahmen (IFI-intern, nicht öffentlich) *</label>
+        <label style={lbl}>Gehaltsrahmen — IFI-intern, nicht öffentlich / Salary range (internal) *</label>
         <Sel options={SALARY} value={f.salary} onChange={v=>set("salary",v)}/>
         {errors.salary && <div style={errSty}>{errors.salary}</div>}
 
-        <label style={lbl}>Bewerbungsdeadline / Application deadline *</label>
-        <input style={inp} type="date" value={f.deadline} onChange={e=>set("deadline",e.target.value)}/>
-        {errors.deadline && <div style={errSty}>{errors.deadline}</div>}
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+          <div>
+            <label style={lbl}>Bewerbungsdeadline / Application deadline *</label>
+            <input style={inp} type="date" value={f.deadline} onChange={e=>set("deadline",e.target.value)}/>
+            {errors.deadline && <div style={errSty}>{errors.deadline}</div>}
+          </div>
+          <div>
+            <label style={lbl}>Gewünschter Starttermin / Desired start date</label>
+            <Sel options={START_DATES} value={f.startDate} onChange={v=>set("startDate",v)}/>
+          </div>
+        </div>
 
         <label style={lbl}>Zusätzliche Informationen / Additional info</label>
-        <textarea style={{...inp,minHeight:80,resize:"vertical"}} value={f.additionalInfo} onChange={e=>set("additionalInfo",e.target.value)} placeholder="Besondere Anforderungen, Benefits, Reisebereitschaft…"/>
+        <textarea style={{...inp,minHeight:80,resize:"vertical"}} value={f.additionalInfo} onChange={e=>set("additionalInfo",e.target.value)} placeholder="Besondere Anforderungen, Benefits, Relocation-Package… / Special requirements, benefits, relocation package…"/>
       </div>}
 
       {/* ── Schritt 4: Datenschutz & Abschluss ── */}
@@ -307,8 +501,13 @@ function ClubForm() {
         ].map(([k,text]) => (
           <div key={k}>
             <div onClick={()=>set(k,!f[k])} style={{display:"flex",alignItems:"flex-start",gap:10,marginTop:14,cursor:"pointer"}}>
-              <div style={{width:18,height:18,minWidth:18,borderRadius:4,border:`1.5px solid ${f[k]?"var(--color-border-info)":"var(--color-border-secondary)"}`,background:f[k]?"var(--color-background-info)":"var(--color-background-primary)",display:"flex",alignItems:"center",justifyContent:"center",marginTop:1}}>
-                {f[k] && <span style={{fontSize:11,color:"var(--color-text-info)",fontWeight:700}}>✓</span>}
+              <div style={{
+                width:18, height:18, minWidth:18, borderRadius:4, marginTop:1,
+                border:`1.5px solid ${f[k]?"var(--ifi-red)":"var(--color-border-secondary)"}`,
+                background:f[k]?"var(--ifi-red-bg)":"var(--color-background-primary)",
+                display:"flex", alignItems:"center", justifyContent:"center",
+              }}>
+                {f[k] && <span style={{fontSize:11,color:"var(--ifi-red)",fontWeight:700}}>✓</span>}
               </div>
               <span style={{fontSize:13,lineHeight:1.6}}>{text} *</span>
             </div>
@@ -317,11 +516,12 @@ function ClubForm() {
         ))}
 
         {sec("Zusammenfassung / Summary")}
-        <div style={{fontSize:13,color:"var(--color-text-secondary)",lineHeight:1.9,background:"var(--color-background-secondary)",borderRadius:8,padding:"12px 14px",marginTop:8}}>
-          <b style={{color:"var(--color-text-primary)"}}>{f.jobTitle}</b><br/>
+        <div style={{fontSize:13,color:"var(--color-text-secondary)",lineHeight:1.9,background:"var(--color-background-secondary)",borderRadius:8,padding:"12px 14px",marginTop:8,borderLeft:"3px solid var(--ifi-red)"}}>
+          <b style={{color:"var(--ifi-gray)"}}>{f.jobTitle||"—"}</b><br/>
           {f.orgName}{f.country ? ` · ${f.country}` : ""}<br/>
-          {f.role}{f.league ? ` · ${f.league}` : ""}<br/>
-          Verfügbarkeit: {f.availability}<br/>
+          {f.role}{f.league ? ` · ${f.league}` : ""}{f.leagueLevel ? ` · ${f.leagueLevel}` : ""}<br/>
+          Verfügbar: {f.availability||"—"} · Start: {f.startDate||"—"}<br/>
+          Vertrag: {f.contractType||"—"}{f.contractDuration ? ` · ${f.contractDuration}` : ""}<br/>
           Ansprechpartner: {f.contactName} · {f.contactEmail}
         </div>
 
@@ -335,11 +535,21 @@ function ClubForm() {
       {/* ── Navigation ── */}
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:8}}>
         {step > 0
-          ? <button onClick={()=>{setErrors({});setStep(step-1);}} style={{padding:"10px 20px",borderRadius:8,border:"0.5px solid var(--color-border-secondary)",background:"var(--color-background-primary)",color:"var(--color-text-secondary)",fontSize:14,cursor:"pointer"}}>← Zurück / Back</button>
+          ? <button onClick={()=>{setErrors({});setStep(step-1);}} style={{padding:"10px 20px",borderRadius:6,border:"1px solid var(--color-border-secondary)",background:"var(--color-background-primary)",color:"var(--color-text-secondary)",fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>← Zurück / Back</button>
           : <div/>
         }
-        <div style={{fontSize:12,color:"var(--color-text-tertiary)"}}>{step+1} / 4</div>
-        <button onClick={next} disabled={submitting} style={{padding:"10px 24px",borderRadius:8,border:"none",background:submitting?"var(--color-background-secondary)":"var(--color-text-info)",color:submitting?"var(--color-text-secondary)":"#fff",fontSize:14,fontWeight:500,cursor:submitting?"not-allowed":"pointer"}}>
+        <div style={{fontSize:12,color:"var(--color-text-tertiary)",fontWeight:500}}>{step+1} / 4</div>
+        <button
+          onClick={next}
+          disabled={submitting}
+          style={{
+            padding:"10px 24px", borderRadius:6, border:"none",
+            background: submitting ? "var(--color-background-tertiary)" : "var(--ifi-red)",
+            color: submitting ? "var(--color-text-secondary)" : "#fff",
+            fontSize:14, fontWeight:700, cursor:submitting?"not-allowed":"pointer",
+            fontFamily:"inherit", letterSpacing:"0.02em",
+            transition:"background .15s",
+          }}>
           {submitting ? "Wird gespeichert…" : step < 3 ? "Weiter / Next →" : "Stelle einreichen / Submit"}
         </button>
       </div>
