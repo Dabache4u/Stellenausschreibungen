@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IFI-Heads – Stellenanzeige</title>
+  <title>IFI-People – Formular Stellenausschreibung</title>
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -92,11 +92,13 @@
       margin-bottom: 0;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 16px;
     }
     .ifi-header-logo {
       height: 38px;
       width: auto;
+      flex-shrink: 0;
     }
     .ifi-header-text { flex: 1; }
     .ifi-header-title {
@@ -340,6 +342,10 @@ function ClubForm() {
   if(submitted) return (
     <div style={{maxWidth:600,margin:"0 auto"}}>
       <div className="ifi-header">
+        <div className="ifi-header-text">
+          <div className="ifi-header-title">IFI-People – Formular Stellenausschreibung</div>
+          <div className="ifi-header-sub">Job Posting / Vacancy Submission</div>
+        </div>
         <IFILogo/>
       </div>
       <div className="ifi-red-bar"/>
@@ -358,11 +364,11 @@ function ClubForm() {
     <div style={{maxWidth:600,margin:"0 auto",paddingBottom:40}}>
       {/* IFI Header */}
       <div className="ifi-header">
-        <IFILogo/>
         <div className="ifi-header-text">
-          <div className="ifi-header-title">IFI-Heads – Stellenanzeige</div>
+          <div className="ifi-header-title">IFI-People – Formular Stellenausschreibung</div>
           <div className="ifi-header-sub">Job Posting / Vacancy Submission</div>
         </div>
+        <IFILogo/>
       </div>
       <div className="ifi-red-bar"/>
 
