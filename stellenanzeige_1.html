@@ -56,13 +56,11 @@ const inp = {width:"100%",padding:"9px 12px",borderRadius:8,border:"1px solid va
 const lbl = {fontSize:13,color:"var(--color-text-secondary)",fontWeight:500,display:"block",marginTop:14};
 const errSty = {fontSize:12,color:"var(--color-text-danger)",marginTop:3};
 
-// ── AIRTABLE CONFIG ─────────────────────────────────────────────────────
 const AIRTABLE_CONFIG = {
-  apiKey: "YOUR_AIRTABLE_API_KEY",     // ← API Key hier eintragen
-  baseId: "YOUR_AIRTABLE_BASE_ID",     // ← Base-ID hier eintragen (appXXXXXX)
-  tableName: "Stellenausschreibungen", // ← Tabellenname exakt wie in Airtable
+  apiKey: "patyYt5kcS9w0ky7e.f2528a8c93887bb92591bbae842f9e433cc01637184b7dc1a6100bcdf14e83cf",
+  baseId: "applVc8y5oj9KJPCd",
+  tableName: "Stellenausschreibungen",
 };
-// ────────────────────────────────────────────────────────────────────────
 
 function Sel({options,value,onChange,placeholder}) {
   return <select value={value} onChange={e=>onChange(e.target.value)} style={{...inp,marginTop:4}}><option value="">{placeholder||"Bitte wählen / Please select"}</option>{options.map(o=><option key={o} value={o}>{o}</option>)}</select>;
