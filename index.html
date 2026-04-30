@@ -221,7 +221,7 @@ function ProgressBar({step}) {
 }
 
 async function sendToAirtable(f) {
-  const fields = {
+  const allFields = {
     "Stellentitel":                                    f.jobTitle,
     "Vereins- oder Verbandsname":                      f.orgName,
     "Ansprechsperson":                                 f.contactName  || null,
@@ -247,24 +247,32 @@ async function sendToAirtable(f) {
     "Status ":                                         "Offen",
     "Eingestellt am":                                  new Date().toISOString().split("T")[0],
   };
-  Object.keys(fields).forEach(k => { if(fields[k]===null||fields[k]==="") delete fields[k]; });
-  const res = await fetch(
-    `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${encodeURIComponent(AIRTABLE_CONFIG.tableName)}`,
-    {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${AIRTABLE_CONFIG.apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ fields }),
+  Object.keys(allFields).forEach(k => { if(allFields[k]===null||allFields[k]==="") delete allFields[k]; });
+
+  const url = `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${encodeURIComponent(AIRTABLE_CONFIG.tableName)}`;
+  const headers = { "Authorization": `Bearer ${AIRTABLE_CONFIG.apiKey}`, "Content-Type": "application/json" };
+
+  // Erst alle Felder zusammen versuchen
+  const res = await fetch(url, { method:"POST", headers, body: JSON.stringify({ fields: allFields }) });
+  if(res.ok) return await res.json();
+
+  // Fehler — Feld fuer Feld testen um den Uebeltaeter zu finden
+  for(const key of Object.keys(allFields)) {
+    const testRes = await fetch(url, {
+      method:"POST", headers,
+      body: JSON.stringify({ fields: { [key]: allFields[key] } })
+    });
+    if(!testRes.ok) {
+      const e = await testRes.json();
+      throw new Error(`Feld "${key}" verursacht den Fehler — bitte in Airtable auf Typ "Single line text" aendern. (${e?.error?.message || JSON.stringify(e)})`);
     }
-  );
-  if(!res.ok) { 
-    const e = await res.json(); 
-    const detail = e?.error?.type ? `[${e.error.type}] ${e?.error?.message}` : JSON.stringify(e);
-    throw new Error(detail); 
+    // Test-Eintrag wieder loeschen
+    const created = await testRes.json();
+    await fetch(`${url}/${created.id}`, { method:"DELETE", headers });
   }
-  return await res.json();
+
+  const e2 = await res.json();
+  throw new Error(`Unbekannter Fehler: ${JSON.stringify(e2)}`);
 }
 
 function ClubForm() {
